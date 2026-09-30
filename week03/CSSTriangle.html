@@ -8,14 +8,28 @@
         #one {
             background-color: blue;
             width:            100px; /* for experiments only */
+            aspect-ratio:     1 / 1;
+            clip-path: polygon(
+                          0    0,
+                        100%   0,
+                         50% 100%
+                       );
         }
         #two {
-            background-color: red;
-            width:            100px; /* for experiments only */
+            background-color: transparent;
+            width:            0; /* for experiments only */
+            border-style: solid;
+            border-color: blue transparent green transparent ;
+            border-width: 100px 50px 0 50px;
         }
         #three {
-            background-color: green;
+            background-color: red;
             width:            100px; /* for experiments only */
+            aspect-ratio: 1 / 1;
+            mask-image: 
+                linear-gradient(calc(atan(2)),     transparent calc(100% * 1/3),  blue calc(100% * 1/3)),
+                linear-gradient(calc(atan(2) *-1), transparent calc(100% * 1/3),  blue calc(100% * 1/3));
+            mask-composite: intersect;
         }
 
     </style>
