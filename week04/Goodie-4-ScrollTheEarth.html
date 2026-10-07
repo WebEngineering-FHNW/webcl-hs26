@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SVG</title>
+    <style>
+        @property --progress {
+            syntax: "<number>";
+            initial-value: 0;
+            inherits: true;
+        }
+
+        body {
+            --progress: 0;
+            --clr-theme: lightgrey;
+
+            --clr-theme-night:   hsl(220deg 70% 20%);
+            --clr-theme-morning: hsl(240deg 50% 40%);
+            --clr-theme-noon:    hsl(212deg 85% 63%);
+            --clr-theme-evening: hsl( 15deg 90% 60%);
+        }
+        h1 {
+            text-align: center;
+            color: var(--clr-theme);
+            background-color: #fff8;
+        }
+
+        .night      { --clr-theme: var(--clr-theme-night);   }
+        .morning    { --clr-theme: var(--clr-theme-morning); }
+        .noon       { --clr-theme: var(--clr-theme-noon);    }
+        .evening    { --clr-theme: var(--clr-theme-evening); }
+
+        .top {
+            width: 60%;
+            margin-inline: auto;
+
+            aspect-ratio: 2 /1 ;
+            display: flex;
+            flex-direction: column;
+            justify-content: end;
+
+            background: radial-gradient(circle at 50% 250%,
+                #fff3  52%,
+                #fff8  64%,
+                #0004  90%
+            );
+            position: relative;
+            overflow: clip; /* comment this to visually debug */
+            &::before {
+                z-index: -1;
+                content: "";
+                position: absolute;
+                top:   -20%;
+                left: -200%;
+                width: 500%;
+                aspect-ratio: 1/1;
+                rotate: calc(var(--progress)*360deg);
+
+                background:
+                    conic-gradient( in display-p3 ,
+                        var(--clr-theme-night)   calc( 4 * 100% / 24),
+                        var(--clr-theme-morning) calc( 5 * 100% / 24),
+                        var(--clr-theme-morning) calc(10 * 100% / 24),
+                        var(--clr-theme-noon)    calc(11 * 100% / 24),
+                        var(--clr-theme-noon)    calc(15 * 100% / 24),
+                        var(--clr-theme-evening) calc(16 * 100% / 24),
+                        var(--clr-theme-evening) calc(21 * 100% / 24),
+                        var(--clr-theme-night)   calc(22 * 100% / 24)
+                    );
+            }
+        }
+        .gear {
+            aspect-ratio: 4 /1 ;
+            position: relative;
+            --stretch: 2;
+
+            & > svg {
+                pointer-events: none; /* no mouse events or the dimensions are off. Let parent handle mouse. */
+                position: absolute;
+                top: 0;
+                left: 0;
+                translate: calc(  (var(--stretch) - 1) * -100% / 4) 5%;
+                width: calc(var(--stretch) * 100%);
+                rotate: calc(var(--progress)*90deg);
+            }
+            & .h-scroll-window {
+                position: absolute;
+                inset: 0;
+                overflow-x: scroll;
+                overscroll-behavior: contain;
+                scrollbar-width: none;
+
+                & .left-right {
+                    position: absolute;
+                    width: 200%;                 /* bigger than parent or there would be nothing to scroll */
+                    inset: 0;
+                }
+            }
+
+        }
+
+        .tooth {
+            stroke-width:   0.004;
+            stroke-opacity: 1;
+            stroke-linecap: round;
+            stroke:         white;
+            fill: #fff4;
+        }
+
+    </style>
+</head>
+<body>
+<div class="top">
+    <div class="gear">
+        <svg viewBox="-1.01 -1.01 2.02 2.02" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path class="tooth paintStroke" />
+        </svg>
+        <div class="h-scroll-window">
+            <div class="left-right">
+            </div>
+        </div>
+    </div>
+</div>
+<h1>FHNW Web Clients Goodie</h1>
+<script>
+    const gearPath = ({toothCount, roundness, ratio, radius}) => {
+        let result         = "";
+        const sin = x => Math.round(Math.sin(x) * 1000) / 1000;
+        const cos = x => Math.round(Math.cos(x) * 1000) / 1000;
+        for (let i = 0; i < toothCount; i++) {
+            const angleDistance = Math.PI * 2 / toothCount;     // from start to next start in rad
+            const angleStart    = angleDistance * i;              // angles are relative to the _vertical_ axis
+            const angleEnd      = angleStart + angleDistance * ratio;    // end of the tooth
+            const angleMid      = (angleEnd + angleStart) / 2;       // mid of the tooth
+            const angleNext     = angleStart + angleDistance;
+            const x1            = sin(angleStart) * radius;   // tooth base coords
+            const y1            = cos(angleStart) * radius;
+            const x2            = sin(angleEnd) * radius;
+            const y2            = cos(angleEnd) * radius;
+
+            const mx = sin(angleMid);
+            const my = cos(angleMid);
+
+            const c1x = sin((angleStart * roundness + angleMid) / (roundness + 1));
+            const c1y = cos((angleStart * roundness + angleMid) / (roundness + 1));
+            const c2x = sin((angleEnd   * roundness + angleMid) / (roundness + 1));
+            const c2y = cos((angleEnd   * roundness + angleMid) / (roundness + 1));
+
+            const nextx = sin(angleNext) * radius;
+            const nexty = cos(angleNext) * radius;
+
+            if (i < 1) {
+                result = `M  ${x1}  ${y1}`;
+            }
+            result += `
+                     Q  ${c1x} ${c1y}   ${mx} ${my}
+                     Q  ${c2x} ${c2y}   ${x2} ${y2}
+                     A ${radius} ${radius} 0 0 0 ${nextx} ${nexty}
+                     `
+        }
+        return result;
+    };
+    document.querySelector(".gear svg path")
+        .setAttribute("d", gearPath({toothCount:64, roundness:0.2, ratio:0.8, radius:0.95}));
+
+    let progress = 0; // value from 0 to 1
+    const setProgress = num => {
+        progress = num; // since we have no observable here, update all users manually
+        document.body.style.setProperty("--progress", String(1 - progress)); // change scroll direction (?)
+        let className = 'night';
+        const h = 1 / 24;
+        if (progress >=  0 * h && progress <   6 * h) className = 'night';
+        if (progress >=  6 * h && progress <  10 * h) className = 'morning';
+        if (progress >= 10 * h && progress <  16 * h) className = 'noon';
+        if (progress >= 16 * h && progress <  20 * h) className = 'evening';
+        if (progress >= 20 * h && progress <  24 * h) className = 'night';
+        document.body.className = className;
+    };
+
+    const scroller = document.querySelector(".h-scroll-window");
+    scroller.onscroll = _evt => {
+        setProgress(scroller.scrollLeft / scroller.getBoundingClientRect().width); /* width might have changed */
+    };
+
+    // animate from 0 to current hour
+    const targetHour = new Date().getHours();
+    const setAndWait = hour => {
+        setTimeout( _ => {
+            scroller.scrollLeft = (hour/24) * scroller.getBoundingClientRect().width; /* width might have changed */
+            hour +=0.5;
+            if ( hour > targetHour ) return;
+            setAndWait(hour);
+        }, 50);
+    };
+    setAndWait(0);
+
+</script>
+
+
+</body>
+</html>
