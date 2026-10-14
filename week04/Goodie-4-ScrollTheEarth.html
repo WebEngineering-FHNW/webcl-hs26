@@ -122,6 +122,7 @@
     </div>
 </div>
 <h1>FHNW Web Clients Goodie</h1>
+
 <script>
     const gearPath = ({toothCount, roundness, ratio, radius}) => {
         let result         = "";
@@ -162,37 +163,68 @@
     };
     document.querySelector(".gear svg path")
         .setAttribute("d", gearPath({toothCount:64, roundness:0.2, ratio:0.8, radius:0.95}));
+</script>
 
-    let progress = 0; // value from 0 to 1
-    const setProgress = num => {
-        progress = num; // since we have no observable here, update all users manually
-        document.body.style.setProperty("--progress", String(1 - progress)); // change scroll direction (?)
-        let className = 'night';
-        const h = 1 / 24;
-        if (progress >=  0 * h && progress <   6 * h) className = 'night';
-        if (progress >=  6 * h && progress <  10 * h) className = 'morning';
-        if (progress >= 10 * h && progress <  16 * h) className = 'noon';
-        if (progress >= 16 * h && progress <  20 * h) className = 'evening';
-        if (progress >= 20 * h && progress <  24 * h) className = 'night';
-        document.body.className = className;
+<script type="module">
+
+    import {Observable} from "./kolibri/observable.js";
+
+    const ProgressModel = startValue => {           // could be moved to inside the controller
+        const progressObs = Observable(startValue);
+        return {
+            setProgress:       progressObs.setValue,
+            onProgressChanged: progressObs.onChange
+        }
     };
 
-    const scroller = document.querySelector(".h-scroll-window");
-    scroller.onscroll = _evt => {
-        setProgress(""+scroller.scrollLeft / scroller.getBoundingClientRect().width); /* width might have changed */
-    };
+    const ProgressController = () => {
+        const progressModel = ProgressModel(0);
 
-    // animate from 0 to current hour
-    const targetHour = new Date().getHours();
-    const setAndWait = hour => {
-        setTimeout( _ => {
-            scroller.scrollLeft = (hour/24) * scroller.getBoundingClientRect().width; /* width might have changed */
-            hour +=0.5;
-            if ( hour > targetHour ) return;
-            setAndWait(hour);
-        }, 50);
+        return {
+            setProgress:       progressModel.setProgress,
+            onProgressChanged: progressModel.onProgressChanged
+        }
     };
-    setAndWait(0);
+    const progressController = ProgressController();
+
+    const ProgressProjector = progressController => {
+
+        // data binding
+        progressController.onProgressChanged( progress => {
+            document.body.style.setProperty("--progress", String(1 - progress)); // change scroll direction (?)
+        } );
+
+        progressController.onProgressChanged( progress => {
+            let className = 'night';
+            const h = 1 / 24;
+            if (progress >=  0 * h && progress <   6 * h) className = 'night';
+            if (progress >=  6 * h && progress <  10 * h) className = 'morning';
+            if (progress >= 10 * h && progress <  16 * h) className = 'noon';
+            if (progress >= 16 * h && progress <  20 * h) className = 'evening';
+            if (progress >= 20 * h && progress <  24 * h) className = 'night';
+            document.body.className = className;
+        });
+
+        // view binding
+        const scroller = document.querySelector(".h-scroll-window");
+        scroller.onscroll = _evt => {
+            progressController.setProgress(""+scroller.scrollLeft / scroller.getBoundingClientRect().width);/* width might have changed */
+        };
+
+        // startsequence
+        // animate from 0 to current hour
+        const targetHour = new Date().getHours();
+        const setAndWait = hour => {
+            setTimeout( _ => {
+                scroller.scrollLeft = (hour/24) * scroller.getBoundingClientRect().width; /* width might have changed */
+                hour +=0.5;
+                if ( hour > targetHour ) return;
+                setAndWait(hour);
+            }, 50);
+        };
+        setAndWait(0);
+    };
+    ProgressProjector(progressController);
 
 </script>
 
