@@ -179,7 +179,7 @@
 
     const scroller = document.querySelector(".h-scroll-window");
     scroller.onscroll = _evt => {
-        setProgress(scroller.scrollLeft / scroller.getBoundingClientRect().width); /* width might have changed */
+        setProgress(""+scroller.scrollLeft / scroller.getBoundingClientRect().width); /* width might have changed */
     };
 
     // animate from 0 to current hour
