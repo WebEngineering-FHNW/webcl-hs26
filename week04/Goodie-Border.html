@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Border</title>
+    <style>
+        .content {
+            border: 1px solid black;
+            width: fit-content;
+            padding: 2em;
+        }
+        .circled {
+            aspect-ratio: 2 / 1;
+            border-radius: 100vw;
+        }
+
+        .gradientBorder {
+            outline: .5em solid white;
+            outline-offset: -1em;
+
+            --angle: 135deg;
+            border: .5em solid transparent;
+            background :
+                linear-gradient(#ccc)         padding-box,
+                linear-gradient( in hsl var(--angle), lightgreen, purple) border-box;
+
+            &:hover {
+                corner-shape: superellipse(1.5);
+                 --angle: 150deg;
+            }
+        }
+
+    </style>
+</head>
+<body>
+<h1>Borders</h1>
+<div class="content circled gradientBorder">
+  Some content
+
+
+</body>
+</html>
