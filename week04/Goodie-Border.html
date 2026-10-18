@@ -13,6 +13,11 @@
             aspect-ratio: 2 / 1;
             border-radius: 100vw;
         }
+        @property --angle {
+            syntax: "<angle>";
+            initial-value: 0deg;
+            inherits: true;
+        }
 
         .gradientBorder {
             outline: .5em solid white;
@@ -24,9 +29,12 @@
                 linear-gradient(#ccc)         padding-box,
                 linear-gradient( in hsl var(--angle), lightgreen, purple) border-box;
 
+            transition-duration: 1s;
+            transition-property: all, --angle; /* custom props need extra listing */
+
             &:hover {
                 corner-shape: superellipse(1.5);
-                 --angle: 150deg;
+                 --angle: 180deg;
             }
         }
 
