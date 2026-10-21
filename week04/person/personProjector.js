@@ -40,10 +40,16 @@ const personListItemProjector = (masterController, selectionController, rootElem
     deleteButton.innerHTML  = "&times;";
     deleteButton.onclick    = _ => masterController.removePerson(person);
 
-    const firstnameInputElement = null; // todo create the input fields and bind to the attribute props
-    const lastnameInputElement  = null;
+
+    const firstnameInputElement = document.createElement("INPUT"); // todo create the input fields and bind to the attribute props
+    const lastnameInputElement  = document.createElement("INPUT");
+    bindTextInput(person.firstname, firstnameInputElement);
+    bindTextInput(person.lastname , lastnameInputElement);
 
     // todo: when a line in the master view is clicked, we have to set the selection
+
+    firstnameInputElement.onclick = _evt => selectionController.setSelectedPerson(person);
+    lastnameInputElement .onclick = _evt => selectionController.setSelectedPerson(person);
 
     selectionController.onPersonSelected(
         selected => selected === person
@@ -64,6 +70,7 @@ const personListItemProjector = (masterController, selectionController, rootElem
     rootElement.appendChild(firstnameInputElement);
     rootElement.appendChild(lastnameInputElement);
     // todo: what to do with selection when person was added?
+    selectionController.setSelectedPerson(person);
 };
 
 const personFormProjector = (detailController, rootElement, person) => {
@@ -79,7 +86,13 @@ const personFormProjector = (detailController, rootElement, person) => {
         </DIV>
     </FORM>`;
 
+    const firstnameInputEl = divElement.querySelector("#firstname");
+    const lastnameInputEl  = divElement.querySelector("#lastname");
     // todo: bind text values
+    detailController.onPersonSelected( person => {
+        bindTextInput(person.firstname, firstnameInputEl);
+        bindTextInput(person.lastname,  lastnameInputEl);
+    });
 
     // todo: bind label values
 
