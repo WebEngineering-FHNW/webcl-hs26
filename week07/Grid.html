@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Grid</title>
+    <style>
+
+        #grid-container {
+            display: grid;
+            grid-template-columns: max-content 1fr 2fr;
+            gap: .2em 1em;
+        }
+        .webcl-row {
+            display: grid;
+            grid-template-columns: subgrid;
+            grid-column: 1 / -1;
+            border: 1px solid red;
+        }
+        .selected  {
+            color: red;
+            border: 20px solid currentColor;
+        }
+
+
+    </style>
+</head>
+<body>
+
+  <div id="grid-container">
+
+      <div class="webcl-row">
+          <div style="background-color: cyan">Some text öalskjfflaksj fölasdkjföaksjf</div>
+          <div style="background-color: lightcoral">Some text</div>
+          <div style="background-color: lightgreen">Some text
+              Some text Some text Some text Some text Some text Some text Some text
+          </div>
+      </div>
+      <div class="webcl-row selected">
+          <div style="background-color: cyan">Some text</div>
+          <div style="background-color: lightcoral">Some text</div>
+          <div style="background-color: lightgreen">Some text
+              Some text Some text Some text Some text Some text Some text Some text
+          </div>
+      </div>
+  </div>
+
+
+</body>
+</html>

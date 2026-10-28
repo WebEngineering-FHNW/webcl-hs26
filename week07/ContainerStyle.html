@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <title>Css Container styled query</title>
+    <style>
+        @container style(--my-var:2) {
+            /*color: blue; syntax error at a container */
+            div {
+                color:      red;
+                position:   relative;
+                left:       5cqb;
+                top:        1cqb;
+                transform: rotate( calc( var(--my-var) * 1deg));  /* trick of the day */
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+
+<div style="--my-var:2;">
+    Outer
+    <div>Red and tiltet in Chrome and Safari but not in FF.
+        <div>Red and tiltet in Chrome and Safari but not in FF.
+            <div>Red and tiltet in Chrome and Safari but not in FF.
+                <div>Red and tiltet in Chrome and Safari but not in FF.</div>
+            </div></div>
+    </div>
+</div>
+
+<div >
+    Outer
+    <div>Inner</div>
+</div>
+
+
+</body>
+
+</html>

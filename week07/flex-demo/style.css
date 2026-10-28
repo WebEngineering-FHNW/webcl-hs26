@@ -1,0 +1,73 @@
+body {
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+    width: 80%;
+    max-width: 600px;
+}
+
+.controls label,
+.controls select {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.flex-container {
+    display: flex;
+    width: 80%;
+    height: 300px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+    transition: all 0.3s ease-in-out;
+    /* Enable transitions for all properties */
+}
+
+.flex-item {
+    background-color: #ddd;
+    color: #333;
+    padding: 20px;
+    margin: 5px;
+    text-align: center;
+    font-size: 1.2em;
+    border: 1px solid #aaa;
+    transition: all 0.3s ease-in-out;
+    /* Enable transitions for all properties */
+}
+
+.item1 {
+    background-color: #e91e63;
+    color: white;
+}
+
+.item2 {
+    background-color: #673ab7;
+    color: white;
+}
+
+.item3 {
+    background-color: #3f51b5;
+    color: white;
+}
+
+.controls-container {
+    display: flex;
+    flex-direction: row;
+}
+
+#resetBtn {
+    margin-top: 5px;
+}
+
+#copyCodeBtn {
+    font-size: 1em;
+    cursor: pointer;
+}

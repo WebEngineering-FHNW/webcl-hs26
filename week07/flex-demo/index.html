@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flexbox Live Demo</title>
+    <meta name="author" content="Shenia Scherer, Andrei Oleniuc">
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Flexbox Live Demo</h1>
+    <div class="controls-container">
+      <div class="control">
+        <!-- Parent Properties Column -->
+        <div class="parent-controls">
+          <h2>Parent Properties</h2>
+          <div class="controls">
+            <div>
+              <label for="flexDirection">flex-direction:</label>
+              <select id="flexDirection">
+                <option value="row">row</option>
+                <option value="row-reverse">row-reverse</option>
+                <option value="column">column</option>
+                <option value="column-reverse">column-reverse</option>
+              </select>
+            </div>
+            <div>
+              <label for="justifyContent">justify-content:</label>
+              <select id="justifyContent">
+                <option value="flex-start">flex-start</option>
+                <option value="flex-end">flex-end</option>
+                <option value="center">center</option>
+                <option value="space-between">space-between</option>
+                <option value="space-around">space-around</option>
+                <option value="space-evenly">space-evenly</option>
+              </select>
+            </div>
+            <div>
+              <label for="alignItems">align-items:</label>
+              <select id="alignItems">
+                <option value="stretch">stretch</option>
+                <option value="flex-start">flex-start</option>
+                <option value="flex-end">flex-end</option>
+                <option value="center">center</option>
+                <option value="baseline">baseline</option>
+              </select>
+            </div>
+            <div>
+              <label for="flexWrap">flex-wrap:</label>
+              <select id="flexWrap">
+                <option value="nowrap">nowrap</option>
+                <option value="wrap">wrap</option>
+                <option value="wrap-reverse">wrap-reverse</option>
+              </select>
+            </div>
+            <div>
+              <label for="alignContent">align-content:</label>
+              <select id="alignContent">
+                <option value="flex-start">flex-start</option>
+                <option value="flex-end">flex-end</option>
+                <option value="center">center</option>
+                <option value="space-between">space-between</option>
+                <option value="space-around">space-around</option>
+                <option value="stretch">stretch</option>
+                <option value="normal">normal</option>
+              </select>
+            </div>
+            <div>
+              <button id="addBoxBtn">Add Box</button>
+              <button id="deleteBoxBtn">Delete Box</button>
+              <button id="resetBtn">Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Child Properties Column -->
+        <div class="child-controls">
+          <h2>Child Properties</h2>
+          <div class="controls">
+            <div>
+              <label for="selectItem">Select Item:</label>
+              <select id="selectItem">
+                <option value="item1">Item 1</option>
+                <option value="item2">Item 2</option>
+                <option value="item3">Item 3</option>
+              </select>
+            </div>
+            <div>
+              <label for="itemOrder">order:</label>
+              <input
+                type="number"
+                id="itemOrder"
+                value="0"
+                min="-10"
+                max="10"
+              />
+              <small
+                >Controls the order in which items appear (default: 0)</small
+              >
+            </div>
+            <div>
+              <label for="itemFlexGrow">flex-grow:</label>
+              <input
+                type="number"
+                id="itemFlexGrow"
+                value="0"
+                min="0"
+                max="10"
+                step="1"
+              />
+              <small
+                >How much the item will grow relative to others (default:
+                0)</small
+              >
+            </div>
+            <div>
+              <label for="itemFlexShrink">flex-shrink:</label>
+              <input
+                type="number"
+                id="itemFlexShrink"
+                value="1"
+                min="0"
+                max="10"
+                step="1"
+              />
+              <small
+                >How much the item will shrink relative to others (default:
+                1)</small
+              >
+            </div>
+            <div>
+              <label for="itemFlexBasis">flex-basis:</label>
+              <input
+                type="text"
+                id="itemFlexBasis"
+                value="auto"
+                placeholder="auto, 100px, 50%, etc"
+              />
+              <small
+                >Default size before remaining space is distributed (default:
+                auto)</small
+              >
+            </div>
+            <div>
+              <label for="itemAlignSelf">align-self:</label>
+              <select id="itemAlignSelf">
+                <option value="auto">auto</option>
+                <option value="flex-start">flex-start</option>
+                <option value="flex-end">flex-end</option>
+                <option value="center">center</option>
+                <option value="baseline">baseline</option>
+                <option value="stretch">stretch</option>
+              </select>
+              <small>Override the parent's align-items for this item</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Code Viewer Section -->
+      <div class="code-viewer">
+        <h2>Flexbox Code</h2>
+        <button id="copyCodeBtn">Copy 📑</button>
+        <pre><code></code></pre>
+      </div>
+    </div>
+
+    <div class="flex-container">
+      <div class="flex-item item1">Item 1</div>
+      <div class="flex-item item2">Item 2</div>
+      <div class="flex-item item3">Item 3</div>
+    </div>
+
+    <script>
+      // Get DOM elements for parent controls
+      const flexDirectionSelect = document.getElementById("flexDirection");
+      const justifyContentSelect = document.getElementById("justifyContent");
+      const alignItemsSelect = document.getElementById("alignItems");
+      const flexWrapSelect = document.getElementById("flexWrap");
+      const alignContentSelect = document.getElementById("alignContent");
+      const flexContainer = document.querySelector(".flex-container");
+      const addBoxBtn = document.getElementById("addBoxBtn");
+      const deleteBoxBtn = document.getElementById("deleteBoxBtn");
+      const resetBtn = document.getElementById("resetBtn");
+
+      // Get DOM elements for child controls
+      const selectItemDropdown = document.getElementById("selectItem");
+      const itemOrderInput = document.getElementById("itemOrder");
+      const itemFlexGrowInput = document.getElementById("itemFlexGrow");
+      const itemFlexShrinkInput = document.getElementById("itemFlexShrink");
+      const itemFlexBasisInput = document.getElementById("itemFlexBasis");
+      const itemAlignSelfSelect = document.getElementById("itemAlignSelf");
+      const copyCodeBtn = document.getElementById("copyCodeBtn");
+
+      let itemCount = 3; // Initial number of flex items
+      const predefinedColors = [
+        "#264653",
+        "#2a9d8f",
+        "#e9c46a",
+        "#f4a261",
+        "#e76f51",
+        "#8ac926",
+        "#1982c4",
+        "#6a4c93",
+        "#99582a",
+        "#bcbddc",
+      ];
+
+      let selectedItem = document.querySelector(".item1"); // Default selection
+      selectedItem.classList.add("selected");
+
+      // Function to update the code viewer with current input values
+      function updateCodeViewer() {
+        const flexContainerCode = `/* Flex Container Styles */
+.flex-container {
+    display: flex;
+    flex-direction: ${flexDirectionSelect.value};
+    justify-content: ${justifyContentSelect.value};
+    align-items: ${alignItemsSelect.value};
+    flex-wrap: ${flexWrapSelect.value};
+    align-content: ${alignContentSelect.value};
+}`;
+        const flexItemCode = `
+
+/* Flex Item Styles */
+.flex-item {
+    order: ${itemOrderInput.value};
+    flex-grow: ${itemFlexGrowInput.value};
+    flex-shrink: ${itemFlexShrinkInput.value};
+    flex-basis: ${itemFlexBasisInput.value};
+    align-self: ${itemAlignSelfSelect.value};
+}`;
+        document.querySelector(".code-viewer code").textContent =
+          flexContainerCode + flexItemCode;
+      }
+
+      // Copy code snippet to clipboard
+      function copyCode() {
+        const codeText =
+          document.querySelector(".code-viewer code").textContent;
+        navigator.clipboard.writeText(codeText).then(() => {
+          alert("Code copied to clipboard!");
+        });
+      }
+
+      copyCodeBtn.addEventListener("click", copyCode);
+
+      // Parent property event listeners
+      flexDirectionSelect.addEventListener("change", () => {
+        flexContainer.style.flexDirection = flexDirectionSelect.value;
+        updateCodeViewer();
+      });
+
+      justifyContentSelect.addEventListener("change", () => {
+        flexContainer.style.justifyContent = justifyContentSelect.value;
+        updateCodeViewer();
+      });
+
+      alignItemsSelect.addEventListener("change", () => {
+        flexContainer.style.alignItems = alignItemsSelect.value;
+        updateCodeViewer();
+      });
+
+      flexWrapSelect.addEventListener("change", () => {
+        flexContainer.style.flexWrap = flexWrapSelect.value;
+        alignContentSelect.disabled = flexWrapSelect.value === "nowrap";
+        // Reset align-content when disabled
+        alignContentSelect.value = "normal";
+        flexContainer.style.alignContent = "normal";
+        updateCodeViewer();
+      });
+
+      alignContentSelect.addEventListener("change", () => {
+        flexContainer.style.alignContent = alignContentSelect.value;
+        updateCodeViewer();
+      });
+
+      // Function to update the selected item and its input values
+      function updateSelectedItem(itemClass) {
+        document.querySelectorAll(".flex-item").forEach((item) => {
+          item.classList.remove("selected");
+        });
+        selectedItem = document.querySelector("." + itemClass);
+        selectedItem.classList.add("selected");
+
+        // Update input fields with the selected item's style or defaults
+        itemOrderInput.value = selectedItem.style.order || "0";
+        itemFlexGrowInput.value = selectedItem.style.flexGrow || "0";
+        itemFlexShrinkInput.value = selectedItem.style.flexShrink || "1";
+        itemFlexBasisInput.value = selectedItem.style.flexBasis || "auto";
+        itemAlignSelfSelect.value = selectedItem.style.alignSelf || "auto";
+        updateCodeViewer();
+      }
+
+      // Child property event listeners
+      selectItemDropdown.addEventListener("change", () => {
+        updateSelectedItem(selectItemDropdown.value);
+      });
+
+      itemOrderInput.addEventListener("change", () => {
+        selectedItem.style.order = itemOrderInput.value;
+        updateCodeViewer();
+      });
+
+      itemFlexGrowInput.addEventListener("change", () => {
+        selectedItem.style.flexGrow = itemFlexGrowInput.value;
+        updateCodeViewer();
+      });
+
+      itemFlexShrinkInput.addEventListener("change", () => {
+        selectedItem.style.flexShrink = itemFlexShrinkInput.value;
+        updateCodeViewer();
+      });
+
+      itemFlexBasisInput.addEventListener("change", () => {
+        selectedItem.style.flexBasis = itemFlexBasisInput.value;
+        updateCodeViewer();
+      });
+
+      itemAlignSelfSelect.addEventListener("change", () => {
+        selectedItem.style.alignSelf = itemAlignSelfSelect.value;
+        updateCodeViewer();
+      });
+
+      // Allow clicking on flex items to select them
+      function addClickListenerToItem(item) {
+        item.addEventListener("click", function () {
+          const itemClass = Array.from(this.classList).find((cls) =>
+            cls.startsWith("item")
+          );
+          selectItemDropdown.value = itemClass;
+          updateSelectedItem(itemClass);
+        });
+      }
+
+      // Add click listeners to initial flex items
+      document.querySelectorAll(".flex-item").forEach((item) => {
+        addClickListenerToItem(item);
+      });
+
+      // Add box function to add a new flex item
+      addBoxBtn.addEventListener("click", () => {
+        itemCount++;
+        const newBox = document.createElement("div");
+        newBox.classList.add("flex-item", `item${itemCount}`);
+        newBox.textContent = `Item ${itemCount}`;
+        newBox.style.backgroundColor =
+          predefinedColors[Math.floor(Math.random() * predefinedColors.length)];
+        newBox.style.color = "white";
+        flexContainer.appendChild(newBox);
+
+        // Add the new item to the dropdown
+        const option = document.createElement("option");
+        option.value = `item${itemCount}`;
+        option.textContent = `Item ${itemCount}`;
+        selectItemDropdown.appendChild(option);
+
+        // Add click listener to the new item
+        addClickListenerToItem(newBox);
+        updateCodeViewer();
+      });
+
+      // Delete box function to remove the last flex item
+      deleteBoxBtn.addEventListener("click", () => {
+        const items = flexContainer.querySelectorAll(".flex-item");
+        if (items.length > 0) {
+          const lastItem = items[items.length - 1];
+          const lastItemClass = Array.from(lastItem.classList).find((cls) =>
+            cls.startsWith("item")
+          );
+          // If the selected item is being deleted, update selection
+          if (selectedItem === lastItem && items.length > 1) {
+            updateSelectedItem("item" + (itemCount - 1));
+            selectItemDropdown.value = "item" + (itemCount - 1);
+          }
+          flexContainer.removeChild(lastItem);
+          itemCount--;
+          // Remove the last option from the dropdown
+          selectItemDropdown.remove(selectItemDropdown.options.length - 1);
+          updateCodeViewer();
+        }
+      });
+
+      // Reset function to restore defaults and remove extra boxes
+      function resetDemo() {
+        // Reset parent controls to default values
+        flexDirectionSelect.value = "row";
+        justifyContentSelect.value = "flex-start";
+        alignItemsSelect.value = "flex-start";
+        flexWrapSelect.value = "nowrap";
+        alignContentSelect.value = "normal";
+        alignContentSelect.disabled = true;
+        flexContainer.style.flexDirection = "row";
+        flexContainer.style.justifyContent = "flex-start";
+        flexContainer.style.alignItems = "stretch";
+        flexContainer.style.flexWrap = "nowrap";
+        flexContainer.style.alignContent = "normal";
+
+        // Reset child controls to default values
+        selectItemDropdown.value = "item1";
+        itemOrderInput.value = "0";
+        itemFlexGrowInput.value = "0";
+        itemFlexShrinkInput.value = "1";
+        itemFlexBasisInput.value = "auto";
+        itemAlignSelfSelect.value = "auto";
+
+        // Remove extra boxes if more than 3 exist
+        while (itemCount > 3) {
+          const items = flexContainer.querySelectorAll(".flex-item");
+          flexContainer.removeChild(items[items.length - 1]);
+          selectItemDropdown.remove(selectItemDropdown.options.length - 1);
+          itemCount--;
+        }
+
+        // Reset styles for the initial 3 items
+        document.querySelectorAll(".flex-item").forEach((item, index) => {
+          item.style.order = "0";
+          item.style.flexGrow = "0";
+          item.style.flexShrink = "1";
+          item.style.flexBasis = "auto";
+          item.style.alignSelf = "auto";
+        });
+
+        // Set selected item back to the first item
+        updateSelectedItem("item1");
+        updateCodeViewer();
+      }
+
+      resetBtn.addEventListener("click", resetDemo);
+
+      // Initial setup
+      updateCodeViewer();
+    </script>
+  </body>
+</html>
