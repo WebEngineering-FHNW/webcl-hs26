@@ -1,0 +1,141 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <title>Flames - this is all fine</title>
+    <style>
+        * {
+            /* margin: 0; */
+            /* padding: 0; */
+            box-sizing: border-box;
+        }
+        
+        body {
+            /* max-width: 60em; */
+            margin: auto;
+            background-color: rgb(184, 202, 208);
+        }
+        
+        main {
+            margin: 2em;
+            position: relative;
+        }
+        
+        fieldset {
+            max-width: 400px;
+            max-height: 40px;
+        }
+        
+        canvas {
+            filter: blur(3px);
+            opacity: 95%;
+        }
+        
+        #canvas1 {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+             /*z-index: -1;*/
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <script>
+            for (let i = 0; i < 10; i++) {
+                document.writeln(`        
+                <fieldset>
+                    <input type="text" id="in-${i}" value="some text">
+                    <input type="submit" value="some button">
+                </fieldset>`);
+            }
+        </script>
+
+
+        <canvas id="canvas1" style="background-color: transparent;" width="400" height="400"></canvas>
+        <canvas id="canvas2" style="background-color: black;" width="400" height="400"></canvas>
+        <canvas id="canvas3" style="background-color: blue;" width="200" height="400"></canvas>
+        <canvas id="canvas4" style="background-color: transparent;" width="400" height="100"></canvas>
+
+        <script>
+            const inputElement0 = document.getElementById("in-0");
+            const inputElement1 = document.getElementById("in-1");
+            const inputElement2 = document.getElementById("in-2");
+            const animateFire = canvas => {
+                const width  = Number(canvas.width);
+                const height = Number(canvas.height);
+                const stage  = canvas.getContext("2d");
+                stage.globalCompositeOperation = "lighter";
+                const size   = 18 ;      // radius of a flame spark, this is a crucial parameter
+                const particleDepth = 3; // so many particles you see on top of each other (in the average)
+                const totalParticles = particleDepth * width * height / (size * size);
+                const maxTTL = 1000; // max ms that a particle lives, the time from bottom to top
+
+
+                let particles = [];
+                const Particle = (x, y, ttl) => ({x, y, ttl /* remaining time to live in ms*/});
+
+                const jitter = () => 2 * Math.random() - 1; // random value between -1 and 1
+
+                let lastTimeRendered = Date.now();
+
+                const render = now => {
+                    const msPassedSinceLastRender = now - lastTimeRendered;
+                    lastTimeRendered = now;
+                    const fraction = msPassedSinceLastRender / maxTTL; // fraction of a lifetime that has passed
+
+                    inputElement0.value = particles.length;
+                    inputElement1.value = (1000 / msPassedSinceLastRender | 0) + " frames/sec";
+                    inputElement2.value = size;
+
+                    // prepare the next particle data 
+                    particles.forEach((particle, idx) => {
+                        particle.ttl -= msPassedSinceLastRender;
+                        if (particle.ttl < 0) return;
+                        particle.x = particle.x + jitter() * size / 2;
+                        particle.y = particle.y - fraction * height ;
+                    })
+                    particles = particles.filter(particle => particle.ttl > 0);  // clean the outlived
+
+                    const particleCount = totalParticles * fraction;
+                    const xDistance = width / particleCount;
+                    for (let i = 0; i < particleCount; i++) {
+                        const versatz = jitter() * size ;
+                        const p = Particle(versatz + (i+0.5) * xDistance, Math.abs(versatz) + height, maxTTL);
+                        particles.push(p);
+                    }
+
+                    stage.clearRect(0, 0, width, height);
+
+                    particles.forEach(p => {
+                        const fractionToLive = p.ttl / maxTTL;
+                        const fractionLived  = 1 - fractionToLive;
+                        const color = "hsla(" +
+                            (60 * fractionToLive) + "," +           // 60 down to 0 , yellow to red
+                            (40 + 40 * fractionToLive ) + "%," +    // 80 down to 40
+                            "20%," +                                // since lightness comes from overshine, we can keep this low
+                            fractionToLive +                        // 100% down to 0
+                            ")";
+                        const radius = size - size / 2 * fractionLived; // size down to half the size
+                        stage.fillStyle = color;
+                        stage.beginPath();
+                        stage.arc(p.x, p.y, radius, 0, 2 * Math.PI);
+                        stage.fill();
+                    });
+                    requestAnimationFrame(render);
+                }
+                render(Date.now());
+            };
+
+            animateFire(document.getElementById("canvas1"));
+            animateFire(document.getElementById("canvas2"));
+            animateFire(document.getElementById("canvas3"));
+            animateFire(document.getElementById("canvas4"));
+        </script>
+
+    </main>
+</body>
+
+</html>
