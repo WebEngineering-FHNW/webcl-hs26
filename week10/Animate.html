@@ -12,30 +12,35 @@
             min-height:         var(--background-height);
         }
         #ball {
+            interpolate-size:   allow-keywords;
             position:           absolute;
             left:               50%;
             background-color:   white;
             width:              var(--ball-height);
-            height:             var(--ball-height);
+            height:             auto;
             border-radius:      50%;
+            transition:         height 1s 2s ease-in-out;
+            @starting-style {
+                left:           0;
+                height:         0;
+            }
         }
         .startAnimation {
             animation:
-                squash linear 1s alternate
-        ;
+                squash linear 1s alternate-reverse infinite;
+
         }
         @keyframes squash {
             0% {
                 top: 0;
-                background-color:   white;
             }
-            50% {
-                top: 80%;
-                background-color:   white;
+            80% {
+                top:       calc(100% - var(--ball-height));
+                transform: scaleY(1) scaleX(1);
             }
             100% {
-                top: 100%;
-                background-color:   blue;
+                top:       calc(100% - var(--ball-height));
+                transform: scaleY(.8) scaleX(1.2);
             }
         }
 
@@ -45,7 +50,24 @@
 
 <main>
 
-    <div id="ball" onclick="this.classList.toggle('startAnimation')"></div>
+    <div id="ball" onclick="this.classList.toggle('startAnimation')">
+        <pre>
+            aöslkfjölfj
+            aösldfjö kl
+            alsdj
+            aöslkfjölfj
+            aösldfjö kl
+            alsdj
+            aöslkfjölfj
+            aösldfjö kl
+            alsdj
+            aöslkfjölfj
+            aösldfjö kl
+            alsdj
+        </pre>
+
+
+    </div>
 
 </main>
 
