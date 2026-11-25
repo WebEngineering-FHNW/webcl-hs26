@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+
+        :root {
+            margin:     0;
+            padding:    0;
+            box-sizing: border-box;
+            font-family: "Helvetica Neue", "sans-serif";
+        }
+
+
+        section {
+            clear:both;
+        }
+
+        .colored {
+            --hue-background-base:          0;
+            --saturation-background-base: 100%;
+            --lightness-background-base:   50%;
+            float: left;
+            width: 10em;
+            height: 10em;
+            border: 1px solid black;
+            margin: 0 1em 1em 1em;
+            background-color: hsl(
+                var(--hue-background-base),
+                var(--saturation-background-base),
+                var(--lightness-background-base)
+            );
+            position: relative;
+        }
+
+        /* ---------------------------- */
+
+        .complement {
+            background-color: hsl(
+                calc(var(--hue-background-base) + 180),
+                var(--saturation-background-base),
+                var(--lightness-background-base)
+            );
+        }
+        .desaturated {
+            background-color: hsl(
+                var(--hue-background-base),
+                calc(var(--saturation-background-base) - 30% ),
+                var(--lightness-background-base)
+            );
+        }
+        .bright {
+            background-color: hsl(
+                var(--hue-background-base),
+                var(--saturation-background-base) ,
+                calc(var(--lightness-background-base) + 20% )
+            );
+        }
+
+        .mercedes-1 {
+            background-color: hsl(
+                calc(var(--hue-background-base) + 135),
+                var(--saturation-background-base),
+                var(--lightness-background-base)
+            );
+        }
+
+        .mercedes-2 {
+            background-color: hsl(
+                calc(var(--hue-background-base) + 225),
+                var(--saturation-background-base),
+                var(--lightness-background-base)
+            );
+        }
+
+        .split-1 {
+            background-color: hsl(
+                calc(var(--hue-background-base) + 160),
+                var(--saturation-background-base),
+                var(--lightness-background-base)
+            );
+        }
+
+        .split-2 {
+            background-color: hsl(
+                calc(var(--hue-background-base) + 200),
+                var(--saturation-background-base),
+                var(--lightness-background-base)
+            );
+        }
+
+        .nearby-1 {
+            background-color: hsl(
+                calc(var(--hue-background-base) - 30),
+                var(--saturation-background-base),
+                var(--lightness-background-base)
+            );
+        }
+
+        .nearby-2 {
+            background-color: hsl(
+                calc(var(--hue-background-base) + 30),
+                var(--saturation-background-base),
+                var(--lightness-background-base)
+            );
+        }
+
+
+    </style>
+</head>
+<body>
+
+
+<main>
+
+    <section>
+        <label for="colorInput">Base Color Hue (0-360):</label>
+        <input  id="colorInput" type="range" min="0" max="360" value="0">
+        <span   id="hue">0</span>
+    </section>
+
+    <section>
+        <h2>Original, Complement, Desaturated, Bright.</h2>
+
+        <div class="colored original">
+            <span style="color:black">Ein schwarzer Text.</span>
+            <span style="color:white">Ein weisser Text. Original.</span>
+            <span style="color:red">Ein roter Text.</span>
+            <span style="color:blue">Ein blauer Text.</span>
+        </div>
+
+        <div class="colored complement">
+            <span style="color:black">Ein schwarzer Text.</span>
+            <span style="color:white">Ein weisser Text. Complement. </span>
+            <span style="color:red">Ein roter Text.</span>
+            <span style="color:blue">Ein blauer Text.</span>
+        </div>
+        <div class="colored desaturated">
+            <span style="color:black">Ein schwarzer Text.</span>
+            <span style="color:white">Ein weisser Text. Desaturated.</span>
+            <span style="color:red">Ein roter Text.</span>
+            <span style="color:blue">Ein blauer Text.</span>
+        </div>
+        <div class="colored bright">
+            <span style="color:black">Ein schwarzer Text.</span>
+            <span style="color:white">Ein weisser Text. Bright. </span>
+            <span style="color:red">Ein roter Text.</span>
+            <span style="color:blue">Ein blauer Text.</span>
+        </div>
+
+    </section>
+
+
+    <section>
+
+        <h2>Original, Triadic 135, 225 </h2>
+        <div class="colored original">
+            <span style="color:black">Ein schwarzer Text.</span>
+            <span style="color:white">Ein weisser Text. Original.</span>
+            <span style="color:red">Ein roter Text.</span>
+            <span style="color:blue">Ein blauer Text.</span>
+        </div>
+
+        <div class="colored mercedes-1">
+            <span style="color:black">Ein schwarzer Text.</span>
+            <span style="color:white">Ein weisser Text. Complement. </span>
+            <span style="color:red">Ein roter Text.</span>
+            <span style="color:blue">Ein blauer Text.</span>
+        </div>
+        <div class="colored mercedes-2">
+            <span style="color:black">Ein schwarzer Text.</span>
+            <span style="color:white">Ein weisser Text. Desaturated.</span>
+            <span style="color:red">Ein roter Text.</span>
+            <span style="color:blue">Ein blauer Text.</span>
+        </div>
+
+    </section>
+
+
+    <section>
+
+        <h2>Original, Split 160, 200 </h2>
+        <div class="colored original">
+            <span style="color:black">Ein schwarzer Text.</span>
+            <span style="color:white">Ein weisser Text. Original.</span>
+            <span style="color:red">Ein roter Text.</span>
+            <span style="color:blue">Ein blauer Text.</span>
+        </div>
+
+        <div class="colored split-1">
+            <span style="color:black">Ein schwarzer Text.</span>
+            <span style="color:white">Ein weisser Text. Complement. </span>
+            <span style="color:red">Ein roter Text.</span>
+            <span style="color:blue">Ein blauer Text.</span>
+        </div>
+        <div class="colored split-2">
+            <span style="color:black">Ein schwarzer Text.</span>
+            <span style="color:white">Ein weisser Text. Desaturated.</span>
+            <span style="color:red">Ein roter Text.</span>
+            <span style="color:blue">Ein blauer Text.</span>
+        </div>
+
+
+    </section>
+
+
+    <section>
+
+        <h2>Original, Nearby -30, 30 </h2>
+        <div class="colored original">
+            <span style="color:black">Ein schwarzer Text.</span>
+            <span style="color:white">Ein weisser Text. Original.</span>
+            <span style="color:red">Ein roter Text.</span>
+            <span style="color:blue">Ein blauer Text.</span>
+        </div>
+
+        <div class="colored nearby-1">
+            <span style="color:black">Ein schwarzer Text.</span>
+            <span style="color:white">Ein weisser Text. Complement. </span>
+            <span style="color:red">Ein roter Text.</span>
+            <span style="color:blue">Ein blauer Text.</span>
+        </div>
+        <div class="colored nearby-2">
+            <span style="color:black">Ein schwarzer Text.</span>
+            <span style="color:white">Ein weisser Text. Desaturated.</span>
+            <span style="color:red">Ein roter Text.</span>
+            <span style="color:blue">Ein blauer Text.</span>
+        </div>
+
+    </section>
+
+</main>
+
+<script>
+    const colorInput   = document.getElementById("colorInput");
+    const hue          = document.getElementById("hue");
+
+    colorInput.oninput = _evt => {
+        document.querySelectorAll('.colored').forEach( elem =>
+            elem.style.setProperty("--hue-background-base", colorInput.value)
+        );
+        hue.textContent = colorInput.value;
+    }
+</script>
+
+
+</body>
+
+</html>
